@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Modal from 'react-modal';
+import DateTimePicker from 'react-datetime-picker';
+import moment from 'moment';
 
 const customStyles = {
   content: {
@@ -12,13 +14,30 @@ const customStyles = {
   },
 };
 
+const now = moment().minutes(0).seconds(0).add(1, 'hours');
+// normallize time if 16:49:01 ==> 17:00:00
+const notNow = now.clone().add(1,'hours');
+// all moments are mutable, clone a moment
+
+
 Modal.setAppElement('#root');
 export const CalendarModal = () => {
+
+  const [dateStart, setDateStart] = useState(now.toDate());
+  const [dateEnd, setDateEnd] = useState(notNow.toDate());
 
   const closeModal = () => {
     console.log('closeee')
   }
 
+  const handleStartDateChange = (e) => {
+    console.log(e);
+    setDateStart(e);
+  }
+  const handleEndDateChange = (e) => {
+    console.log(e);
+    setDateEnd(e);
+  }
 
   return (
     <Modal
@@ -36,12 +55,22 @@ export const CalendarModal = () => {
 
         <div className="form-group">
           <label>Fecha y hora inicio</label>
-          <input className="form-control" placeholder="Fecha inicio" />
+          <DateTimePicker
+            onChange={ handleStartDateChange }
+            value={ dateStart }
+            className="form-control"
+            minDate={ dateStart }
+          />
         </div>
 
         <div className="form-group">
           <label>Fecha y hora fin</label>
-          <input className="form-control" placeholder="Fecha inicio" />
+          <DateTimePicker
+            onChange={ handleEndDateChange }
+            value={ dateEnd }
+            className="form-control"
+            minDate={ dateStart }
+          />
         </div>
 
         <hr />
