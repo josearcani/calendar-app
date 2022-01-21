@@ -1,20 +1,23 @@
 import React, { useState } from 'react';
 import moment from 'moment';
 import { useDispatch } from 'react-redux';
-
-import { uiOpenModal } from '../../actions/uiActions';
-
 import { Calendar, momentLocalizer } from 'react-big-calendar';
-import { messages } from '../../helpers/calendar-messages-es';
+
 import { Navbar } from '../ui/Navbar';
+import { messages } from '../../helpers/calendar-messages-es';
 import { CalendarEvent } from './CalendarEvent';
 import { CalendarModal } from './CalendarModal';
 
+import { uiOpenModal } from '../../actions/uiActions';
+import { eventSetActive } from '../../actions/eventsActions';
+
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import 'moment/locale/es';
+import { AddNewFab } from '../ui/AddNewFab';
+
 moment.locale('es');
 
-const localizer = momentLocalizer(moment)
+const localizer = momentLocalizer(moment);
 
 const myEventsList = [
   {
@@ -37,12 +40,13 @@ export const CalendarScreen = () => {
 
   const onDoubleClick = (e) => {
     // console.log(e);
-    dispatch(uiOpenModal());
+    dispatch(uiOpenModal()); // double click to modify event
   }
 
   const onSelectEvent = (e) => {
-    // console.log(e);
-    console.log('select click');
+    console.log(e);
+    dispatch(eventSetActive(e))
+    dispatch(uiOpenModal()); // to open event
   }
 
   const onViewChange = (e) => {
@@ -85,6 +89,8 @@ export const CalendarScreen = () => {
           event: CalendarEvent
         }}
       />
+
+      <AddNewFab />
 
       <CalendarModal />
     </div>
