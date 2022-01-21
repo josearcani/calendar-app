@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Modal from 'react-modal';
 import DateTimePicker from 'react-datetime-picker';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { uiCloseModal } from '../../actions/uiActions';
+import { eventAddNew, eventClearActiveEvent, eventUpdated } from '../../actions/eventsActions';
 import moment from 'moment';
 import Swal from 'sweetalert2';
 
@@ -25,23 +26,39 @@ const notNow = now.clone().add(1,'hours');
 
 Modal.setAppElement('#root');
 
+const initEvent = {
+  title: '',
+  notes: '',
+  start: now.toDate(),
+  end: notNow.toDate()
+}
+
 export const CalendarModal = () => {
 
   const { modalOpen } = useSelector((state) => state.ui );
+  const { activeEvent } = useSelector((state) => state.calendar );
   const dispatch = useDispatch();
 
   const [dateStart, setDateStart] = useState(now.toDate());
   const [dateEnd, setDateEnd] = useState(notNow.toDate());
   const [titleValid, setTitleValid] = useState(true);
 
-  const [formValues, setFormValues] = useState({
-    title: 'Evento',
-    notes: '',
-    start: now.toDate(),
-    end: notNow.toDate()
-  });
+  const [formValues, setFormValues] = useState(initEvent);
 
   const { title, notes, start, end } = formValues;
+
+  useEffect(() => {
+    if (activeEvent) {
+      // in case it is null
+      setFormValues(activeEvent);
+      setDateStart(activeEvent.start);
+      setDateEnd(activeEvent.end);
+    } else {
+      // to keep date acording
+      setDateStart(now.toDate());
+      setDateEnd(notNow.toDate());
+    }
+  }, [ activeEvent, setFormValues ]);
 
   const handleInputChange = ({ target }) => {
     setFormValues({
@@ -51,9 +68,9 @@ export const CalendarModal = () => {
   }
 
   const closeModal = () => {
-    console.log('closeee');
     dispatch(uiCloseModal());
-    // close modal
+    dispatch(eventClearActiveEvent());
+    setFormValues(initEvent);
   }
 
   const handleStartDateChange = (e) => {
@@ -87,10 +104,24 @@ export const CalendarModal = () => {
       return setTitleValid(false);
     }
 
-    // TODO save to db
+    // TODO save to db 
     setTitleValid(true);
-    closeModal();
+    // console.log(formValues);
 
+    if (activeEvent) {
+      dispatch(eventUpdated(formValues));
+    } else {
+      dispatch(eventAddNew({
+        ...formValues,
+        id: new Date().getTime(),
+        user: {
+          _id: 1233,
+          name: 'joseph'
+        }
+      }));
+    }
+
+    closeModal();
   }
 
   return (
