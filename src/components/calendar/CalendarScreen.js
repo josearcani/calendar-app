@@ -8,13 +8,14 @@ import { Navbar } from '../ui/Navbar';
 import { messages } from '../../helpers/calendar-messages-es';
 import { CalendarEvent } from './CalendarEvent';
 import { CalendarModal } from './CalendarModal';
+import { AddNewFab } from '../ui/AddNewFab';
+import { DeleteEventFab } from '../ui/DeleteEventFab';
 
 import { uiOpenModal } from '../../actions/uiActions';
-import { eventSetActive } from '../../actions/eventsActions';
+import { eventClearActiveEvent, eventSetActive } from '../../actions/eventsActions';
 
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import 'moment/locale/es';
-import { AddNewFab } from '../ui/AddNewFab';
 
 moment.locale('es');
 
@@ -37,7 +38,7 @@ const localizer = momentLocalizer(moment);
 export const CalendarScreen = () => {
   const dispatch = useDispatch();
 
-  const { events } = useSelector((state) => state.calendar);
+  const { events, activeEvent } = useSelector((state) => state.calendar);
 
   const [lastView, setLastView] = useState( localStorage.getItem('lastView') || 'month' );
 
@@ -55,6 +56,11 @@ export const CalendarScreen = () => {
     // console.log(e);
     setLastView(e);
     localStorage.setItem('lastView', e);
+  }
+
+  const onSelectSlot = (e) => {
+    console.log(e); // you can craete a note directly on the date
+    dispatch(eventClearActiveEvent());
   }
 
   const eventStyleGetter = (event, start, end, isSelected) => {
@@ -87,13 +93,17 @@ export const CalendarScreen = () => {
         onSelectEvent={ onSelectEvent }
         onView={ onViewChange }
         view={ lastView }
+        onSelectSlot={ onSelectSlot }
+        selectable={ true }
         components={{
           event: CalendarEvent
         }}
       />
 
       <AddNewFab />
-
+      {
+        activeEvent && <DeleteEventFab />
+      }
       <CalendarModal />
     </div>
   );

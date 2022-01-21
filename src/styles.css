@@ -86,3 +86,11 @@ body, body {
   position: fixed;
   right: 25px;
 }
+
+.fab-danger {
+  bottom: 25px;
+  font-size: 16px;
+  padding: 15px;
+  position: fixed;
+  left: 25px;
+}
