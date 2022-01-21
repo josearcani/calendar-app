@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import Modal from 'react-modal';
 import DateTimePicker from 'react-datetime-picker';
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { uiCloseModal } from '../../actions/uiActions';
 import moment from 'moment';
 import Swal from 'sweetalert2';
 
@@ -24,6 +27,9 @@ Modal.setAppElement('#root');
 
 export const CalendarModal = () => {
 
+  const { modalOpen } = useSelector((state) => state.ui );
+  const dispatch = useDispatch();
+
   const [dateStart, setDateStart] = useState(now.toDate());
   const [dateEnd, setDateEnd] = useState(notNow.toDate());
   const [titleValid, setTitleValid] = useState(true);
@@ -45,7 +51,8 @@ export const CalendarModal = () => {
   }
 
   const closeModal = () => {
-    console.log('closeee')
+    console.log('closeee');
+    dispatch(uiCloseModal());
     // close modal
   }
 
@@ -88,11 +95,11 @@ export const CalendarModal = () => {
 
   return (
     <Modal
-      isOpen={true}
+      isOpen={ modalOpen }
       // onAfterOpen={afterOpenModal}
-      onRequestClose={closeModal}
-      closeTimeoutMS={200}
-      style={customStyles}
+      onRequestClose={ closeModal }
+      closeTimeoutMS={ 200 } // should match with css animation
+      style={ customStyles }
       className="modal"
       overlayClassName="modal-fondo"
     >

@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import moment from 'moment';
+import { useDispatch } from 'react-redux';
+
+import { uiOpenModal } from '../../actions/uiActions';
 
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import { messages } from '../../helpers/calendar-messages-es';
@@ -29,18 +32,21 @@ const myEventsList = [
 
 export const CalendarScreen = () => {
 
+  const dispatch = useDispatch();
   const [lastView, setLastView] = useState( localStorage.getItem('lastView') || 'month' );
 
   const onDoubleClick = (e) => {
-    console.log(e);
+    // console.log(e);
+    dispatch(uiOpenModal());
   }
 
   const onSelectEvent = (e) => {
-    console.log(e);
+    // console.log(e);
+    console.log('select click');
   }
 
   const onViewChange = (e) => {
-    console.log(e);
+    // console.log(e);
     setLastView(e);
     localStorage.setItem('lastView', e);
   }
