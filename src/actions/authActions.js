@@ -21,6 +21,26 @@ export const startLogin = (email, password) => {
   }
 }
 
+export const startRegister = (name, email, password) => {
+  return async (dispatch) => {
+
+    const resp = await fetchWithoutToken('auth/new', {name, email, password }, 'POST');
+    const body = await resp.json();
+
+    console.log(body);
+    if (body.ok) {
+      localStorage.setItem('token', body.token);
+      localStorage.setItem('token-init-date', new Date().getTime());
+
+      dispatch(login({ name: body.name, uid: body.uid }));
+
+    } else {
+      Swal.fire('Error', body.msg, 'error');
+    }
+
+  }
+}
+
 const login = (user) => ({
   type: types.authLogin,
   payload: user
