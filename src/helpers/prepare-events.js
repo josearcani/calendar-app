@@ -2,7 +2,7 @@ import moment from 'moment';
 
 export const prepareEvents = (events = []) => {
 
-  console.log(events);
+  // console.log(events);
 
   return  events.map(
     event => ({
