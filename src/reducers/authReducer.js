@@ -16,10 +16,11 @@ export const authReducer = (state = initialState, action) => {
         checking: false,
       }
     case types.authCheckingFinish:
+      // prev state is initialState so uid and name doNot exist
       return {
         ...state,
-        uid: null,
-        name: null,
+        // uid: null,
+        // name: null,
         checking: false,
       }
   
