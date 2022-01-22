@@ -4,7 +4,7 @@ import DateTimePicker from 'react-datetime-picker';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { uiCloseModal } from '../../actions/uiActions';
-import { eventAddNew, eventClearActiveEvent, eventUpdated } from '../../actions/eventsActions';
+import { startEventAddNew, eventClearActiveEvent, eventUpdated } from '../../actions/eventsActions';
 import moment from 'moment';
 import Swal from 'sweetalert2';
 
@@ -37,6 +37,7 @@ export const CalendarModal = () => {
 
   const { modalOpen } = useSelector((state) => state.ui );
   const { activeEvent } = useSelector((state) => state.calendar );
+  // const { name, uid } = useSelector((state) => state.auth );
   const dispatch = useDispatch();
 
   const [dateStart, setDateStart] = useState(now.toDate());
@@ -112,14 +113,7 @@ export const CalendarModal = () => {
     if (activeEvent) {
       dispatch(eventUpdated(formValues));
     } else {
-      dispatch(eventAddNew({
-        ...formValues,
-        id: new Date().getTime(),
-        user: {
-          _id: 1233,
-          name: 'joseph'
-        }
-      }));
+      dispatch(startEventAddNew(formValues));
     }
 
     closeModal();

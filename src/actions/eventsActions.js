@@ -1,3 +1,4 @@
+import { fetchWithToken } from '../helpers/fetch';
 import { types } from '../types/types';
 
 export const eventSetActive = (event) => ({
@@ -5,7 +6,24 @@ export const eventSetActive = (event) => ({
   payload: event
 });
 
-export const eventAddNew = (event) => ({
+export const startEventAddNew = (event) => {
+  return async (dispatch, getState) => {
+    const { uid, name } = getState().auth;
+    try {
+      const resp = await fetchWithToken('events', event, 'POST');
+      const body = await resp.json();
+
+      if (body.ok) {
+        event.id = body.event.id;
+        event.user = { _id: uid, name };
+        dispatch(eventAddNew(event));
+      } 
+    } catch (error) {
+      console.log(error);
+    }
+  }
+}
+const eventAddNew = (event) => ({
   type: types.eventAddNew,
   payload: event
 });
