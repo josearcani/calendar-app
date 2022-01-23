@@ -4,7 +4,7 @@ import DateTimePicker from 'react-datetime-picker';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { uiCloseModal } from '../../actions/uiActions';
-import { startEventAddNew, eventClearActiveEvent, eventUpdated } from '../../actions/eventsActions';
+import { startEventAddNew, eventClearActiveEvent, startEventUpdated } from '../../actions/eventsActions';
 import moment from 'moment';
 import Swal from 'sweetalert2';
 
@@ -111,7 +111,7 @@ export const CalendarModal = () => {
     // console.log(formValues);
 
     if (activeEvent) {
-      dispatch(eventUpdated(formValues));
+      dispatch(startEventUpdated(formValues));
     } else {
       dispatch(startEventAddNew(formValues));
     }

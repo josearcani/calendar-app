@@ -1,3 +1,4 @@
+import Swal from 'sweetalert2';
 import { fetchWithToken } from '../helpers/fetch';
 import { prepareEvents } from '../helpers/prepare-events';
 import { types } from '../types/types';
@@ -38,6 +39,23 @@ export const eventStartLoading = () => {
   }
 }
 
+export const startEventUpdated = (event) => {
+  return async (dispatch) => {
+    try {
+      const resp = await fetchWithToken(`events/${ event.id }`, event, 'PUT');
+      const body = await resp.json();
+      console.log(body);
+      if (body.ok) {
+        dispatch(eventUpdated(event));
+      } else {
+        Swal.fire('Error', body.msg, 'error');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+}
+
 const eventLoaded = (events) => ({
   type: types.eventLoaded,
   payload: events
@@ -52,7 +70,7 @@ export const eventClearActiveEvent = () => ({
   type: types.eventClearActiveEvent,
 });
 
-export const eventUpdated = (event) => ({
+const eventUpdated = (event) => ({
   type: types.eventUpdated,
   payload: event
 });
