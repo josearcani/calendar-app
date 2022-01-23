@@ -95,3 +95,7 @@ const eventUpdated = (event) => ({
 const eventDeleted = () => ({
   type: types.eventDeleted,
 });
+
+export const eventClearLogout = () => ({
+  type: types.eventClearLogout,
+});
