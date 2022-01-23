@@ -17,12 +17,13 @@ body, body {
 
 .rbc-calendar {
   height: 100%;
+  overflow: hidden;
 }
 
-/* ::-webkit-scrollbar {
-  display: none;
-} */
-
+::-webkit-scrollbar {
+  /* display: none; */
+  width: 12px;
+}
 
 /* Modal */
 .ReactModalPortal > div{
@@ -85,6 +86,7 @@ body, body {
   padding: 15px;
   position: fixed;
   right: 25px;
+  z-index: 100;
 }
 
 .fab-danger {
@@ -93,4 +95,5 @@ body, body {
   padding: 15px;
   position: fixed;
   left: 25px;
+  z-index: 100;
 }
