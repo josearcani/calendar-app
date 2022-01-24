@@ -1,7 +1,8 @@
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import Swal from 'sweetalert2';
-import { startLogin } from '../../actions/authActions';
+import { startLogin, startRegister } from '../../actions/authActions';
+import * as fetchModule from '../../helpers/fetch';
 import { types } from '../../types/types';
 
 const middlewares = [thunk];
@@ -62,4 +63,34 @@ describe('Test on authActions', () => {
     await store.dispatch(startLogin('notexists@test.com', 'secret'));
     expect(Swal.fire).toHaveBeenCalledWith('Error', 'Correo o contraseña no válido - correo', 'error');
   });
+
+
+  test('should startRegister runs correctly', async () => {
+    // to not fill db with test users lets mock fetchWithoutToken
+    // also the json() return so it can dispatch login
+    fetchModule.fetchWithoutToken = jest.fn(() => ({
+      json() {
+        return {
+          ok: true,
+          uid: '12355',
+          name: 'toto',
+          token: '3kj123h41uhoqwuhfnz097nyr2fakeToken'
+        }
+      }
+    }));
+    await store.dispatch(startRegister('testUser', 'testerEmail@test.com', 'test'));
+    const actions = store.getActions();
+    // console.log(actions);
+    expect(actions[0]).toEqual({
+      type: types.authLogin,
+      payload: {
+        uid: '12355',
+        name: 'toto'
+      }
+    });
+    expect(localStorage.setItem).toHaveBeenCalledWith('token', '3kj123h41uhoqwuhfnz097nyr2fakeToken');
+    expect(localStorage.setItem).toHaveBeenCalledWith('token-init-date', expect.any(Number));
+  });
+  
+
 });
