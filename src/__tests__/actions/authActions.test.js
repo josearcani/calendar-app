@@ -1,7 +1,7 @@
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import Swal from 'sweetalert2';
-import { startChecking, startLogin, startRegister } from '../../actions/authActions';
+import { startChecking, startLogin, startLogout, startRegister } from '../../actions/authActions';
 import * as fetchModule from '../../helpers/fetch';
 import { types } from '../../types/types';
 
@@ -23,6 +23,7 @@ const initState = {
 
 // mock of localstorage
 Storage.prototype.setItem = jest.fn();
+Storage.prototype.clear = jest.fn();
 
 const store = mockStore(initState);
 
@@ -117,6 +118,10 @@ describe('Test on authActions', () => {
     expect(localStorage.setItem).toHaveBeenCalledWith('token', '3kj123h41uhoqwuhfnz097nyr2fakeToken');
   });
   
-
-
+  test('should startLogout  runs correctly', async () => {
+    await store.dispatch(startLogout());
+    const actions = store.getActions();
+    expect(localStorage.clear).toHaveBeenCalledTimes(1);
+    expect(actions.length).toBe(2);
+  });
 });
