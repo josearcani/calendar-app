@@ -6,7 +6,7 @@ const initState = {
 };
 
 describe('Test on uiReducer', () => {
-  test('should return the dedault state', async () => {
+  test('should return the default state', async () => {
     const state = uiReducer(initState, {});
     expect(state).toEqual(initState);
   });
