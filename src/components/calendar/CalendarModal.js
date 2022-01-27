@@ -24,7 +24,9 @@ const now = moment().minutes(0).seconds(0).add(1, 'hours');
 const notNow = now.clone().add(1,'hours');
 // all moments are mutable, clone a moment
 
-Modal.setAppElement('#root');
+if (process.env.NODE_ENV !== 'test') {
+  Modal.setAppElement('#root');
+}
 
 const initEvent = {
   title: '',
