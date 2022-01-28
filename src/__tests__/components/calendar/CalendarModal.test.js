@@ -8,13 +8,19 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
 import { CalendarModal } from '../../../components/calendar/CalendarModal';
-import { eventClearActiveEvent, startEventUpdated } from '../../../actions/eventsActions';
+import { eventClearActiveEvent, startEventAddNew, startEventUpdated } from '../../../actions/eventsActions';
+import { act } from '@testing-library/react';
+import Swal from 'sweetalert2';
+
+jest.mock('sweetalert2', () => ({
+  fire: jest.fn()
+}));
 
 jest.mock('../../../actions/eventsActions', () => ({
   startEventUpdated: jest.fn(),
   eventClearActiveEvent: jest.fn(),
+  startEventAddNew: jest.fn(),
 }));
-
 
 // Storage.prototype.setItem = jest.fn()
 
@@ -84,4 +90,67 @@ describe('Test on <CalendarModal />', () => {
     expect(wrapper.find('input[name="title"]').prop('className').includes('is-invalid')).toBe(true);
     expect(wrapper.find('input[name="title"]').hasClass('is-invalid')).toBe(true);
   });
+
+  test('should create a new event with startEventAddNew', () => {
+    const initState = {
+      ui: {
+        modalOpen: true
+      },
+      calendar: {
+        events: [],
+        activeEvent: null
+      },
+      auth: {
+        uid: '1234mmisaerg',
+        name: 'joseph'
+      }
+    };
+    const store = mockStore(initState);
+    store.dispatch = jest.fn();
+
+    const wrapper = mount(
+      <Provider store={ store }>
+        <CalendarModal />
+      </Provider>
+    )
+
+    wrapper.find('input[name="title"]').simulate('change', {
+      target: {
+        name: 'title',
+        value: 'new test Event'
+      }
+    })
+
+    wrapper.find('form').simulate('submit', { preventDefault(){} });
+    expect(startEventAddNew).toHaveBeenCalledWith({
+      end: expect.anything(),
+      start: expect.anything(),
+      title: 'new test Event',
+      notes: ''
+    });
+    expect(eventClearActiveEvent).toHaveBeenCalled()
+  });
+
+  test('should validate dates from form', () => {
+    
+    wrapper.find('input[name="title"]').simulate('change', {
+      target: {
+        name: 'title',
+        value: 'new test Event'
+      }
+    })
+
+    const today = new Date(); 
+
+    act(() => {
+      wrapper.find('DateTimePicker').at(1).prop('onChange')(today); 
+    })
+    wrapper.find('form').simulate('submit', { preventDefault(){} });
+
+    expect(Swal.fire).toHaveBeenCalledWith('Error', 'La fecha fub debe ser mayor que la fecha de inicio', 'error');
+
+  });
+  
+  
+
 });
