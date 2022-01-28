@@ -24,7 +24,7 @@ const mockStore = configureStore(middlewares);
 
 const initState = {
   ui: {
-    openModal: false
+    modalOpen: false
   },
   calendar: {
     events: [],
